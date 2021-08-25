@@ -1,0 +1,51 @@
+## Goals
+- Enable customers to deploy a basic integration starter to dev/test and prod WITHOUT needing a partner or microsoft assistance
+- Allow partners to deliver a funded integration go-fast (light) engagement in 2 weeks
+- that means standing up a basic integration architecture through dev, test and prod with CI/CD with Github
+- Included services
+    - App Gateway
+    - APIM
+    - Logic App
+    - Key Vault
+    - Storage Account
+    - App Insights
+    - VNet Integration and Private Endpoints
+    - GitHub 
+    - BICEP
+
+## Guiding principles
+- follow best practices as we believe it should be done today. only using technologies that are GA
+
+## Backlog
+-
+
+
+==========================================================================================
+
+- Specifically not included in the starter, but added by partner in engagement
+    - service bus
+    - eventgrid
+    - policy
+    - cosmosdb / sql server
+    - Azure DevOps 
+- 
+
+
+- Questions: 
+- Monitoring
+
+
+Guiding principles
+- brest practice - e.g. must include ci/cd, logging and monitoring
+
+
+
+Complexity this solution solves
+- CI/CD/IAC for an azure solution 
+- CI/CD for APIM (in particularly problematic)
+
+
+High Value Learnings
+- BiCep
+
+-
