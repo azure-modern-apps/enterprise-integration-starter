@@ -1,42 +1,25 @@
-param storageAccountName string = 'steisdevauea'
+param storageAccountName string
+param storageAccountType string
+param logicAppName string
+param logicAppAspName string
+param logicAppAspSku object
 
-@allowed([
-  'Standard_LRS'
-  'Standard_GRS'
-  'Standard_ZRS'
-  'Premium_LRS'
-])
-param storageAccountType string = 'Standard_LRS'
-
-resource storageAccount_eis 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: storageAccountName
-  location: resourceGroup().location
-  sku: {
-    name: storageAccountType
-  }
-  kind: 'Storage'
-  properties: {
-    minimumTlsVersion: 'TLS1_2'
-    networkAcls: {
-      bypass: 'AzureServices'
-      virtualNetworkRules: []
-      ipRules: []
-      defaultAction: 'Allow'
-    }
-    supportsHttpsTrafficOnly: true
-    encryption: {
-      services: {
-        file: {
-          keyType: 'Account'
-          enabled: true
-        }
-        blob: {
-          keyType: 'Account'
-          enabled: true
-        }
-      }
-      keySource: 'Microsoft.Storage'
-    }
+module storageAccountModule './storageAccount.bicep' = {
+  name: 'rg-deploy-${storageAccountName}'
+  params: {
+    storageAccountName: storageAccountName
+    storageAccountType: storageAccountType
   }
 }
-
+module logicAppModule './logicApp.bicep' = {
+  name: 'rg-deploy-${logicAppName}'
+  params: {
+    logicAppAspName: logicAppAspName
+    logicAppAspSku: logicAppAspSku
+    logicAppName: logicAppName
+    storageAccountDetails: storageAccountModule.outputs.storageAccountDetails
+  }
+  dependsOn: [
+    storageAccountModule
+  ]
+}
