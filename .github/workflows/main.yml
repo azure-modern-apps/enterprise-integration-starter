@@ -4,7 +4,7 @@ on:
 name: Bicep EIS Deployment
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       # Checkout code
       - uses: actions/checkout@main
@@ -19,6 +19,6 @@ jobs:
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
-          template: ./templates/azuredeploy.bicep
-          parameters: ./templates/azuredeploy.parameters-dev.json
+          template: ./templates/main.bicep
+          parameters: ./templates/main.parameters-dev.json
           failOnStdErr: true
