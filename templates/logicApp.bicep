@@ -10,7 +10,6 @@ param logicAppName string
 @description('Contains storage account API version, name and id to retrieve the connection string.')
 param storageAccountDetails object
 
-
 resource appServicePlanLogicApp 'Microsoft.Web/serverfarms@2018-02-01' = {
   name: logicAppAspName
   location: resourceGroup().location
