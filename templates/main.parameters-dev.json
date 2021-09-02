@@ -7,6 +7,22 @@
       },
       "storageAccountType": {
         "value": "Standard_LRS"
+      },
+      "logicAppAspName": {
+        "value": "plan-eis-dev-auea"
+      },
+      "logicAppAspSku": {
+        "value": {
+          "name": "WS1",
+          "tier": "WorkflowStandard",
+          "size": "WS1",
+          "family": "WS",
+          "capacity": 1
+        }
+      },
+      "logicAppName": {
+        "value": "logic-eis-dev-auea"
       }
+
     }
   }
