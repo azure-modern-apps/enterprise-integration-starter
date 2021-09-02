@@ -1,78 +1,79 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and Deploy Logic App. 
+name: Build and Deploy Logic App
 
 env:
-  LA_NAME: 'logic-eis-dev-auea'
+  #TODO: Need to set this at environment level when/if we setup GitHub environments.
+  LOGIC_APP_NAME: "logic-eis-dev-auea"
 
 on:
   workflow_dispatch:
-  # Trigger the workflow every time the build workflow ran to completion
+  # Trigger the workflow every time the Bicep EIS Deployment workflow ran to completion
   workflow_run:
-    workflows:
-      - Bicep EIS Deployment
+    workflows: ["Bicep EIS Deployment"]
+    branches: [main]
     types:
       - completed
-  # Triggers when an environment file has been changed  
+
+  # Triggers when one of the specified files have been changed
   push:
+    branches: [main]
     paths:
       - "logicAppWorkflow/**"
       - ".github/workflows/logicApp.yml"
 
 jobs:
-  logic_app_build: 
-    name: Build 
+  logic_app_build:
+    name: Build
     runs-on: ubuntu-latest
-    steps: 
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Package logic app workflow
-      run: (cd logicAppWorkflow; mkdir -p ../output; zip -r ../output/logicAppWorkflow.zip .)
-    - name: Upload app zip package
-      uses: actions/upload-artifact@v2
-      with:
-        name: logicAppWorkflow
-        path: ./output/
-        retention-days: 1 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Package logic app workflow
+        run: (cd logicAppWorkflow; mkdir -p ../output; zip -r ../output/logicAppWorkflow.zip .)
+      - name: Upload app zip package
+        uses: actions/upload-artifact@v2
+        with:
+          name: logicAppWorkflow
+          path: ./output/
+          retention-days: 1
 
-  logic_app_deploy: 
-    name: Deploy 
+  logic_app_deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     needs: [logic_app_build]
-    environment: 
+    environment:
       name: Dev
-    steps: 
-    - name: Checkout
-      uses: actions/checkout@v1    
-    - name: Login via Az module
-      uses: azure/login@v1
-      with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
-        enable-AzPSSession: true 
-    - uses: actions/download-artifact@master
-      with:
-        name: logicAppWorkflow
-        path: ./output/
-        
-    - name: Get publish Profile
-      id: publishprofile
-      uses: azure/powershell@v1
-      with:
-        inlineScript: |
-          $profile = Get-AzWebAppPublishingProfile `
-              -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP }} `
-              -Name ${{ env.LA_NAME }}
-          $profile = $profile.Replace("`r", "").Replace("`n", "")
-          Write-Output "::set-output name=profile::$profile"
-        azPSVersion: latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Login via Az module
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+          enable-AzPSSession: true
+      - uses: actions/download-artifact@master
+        with:
+          name: logicAppWorkflow
+          path: ./output/
 
-    - name: Deploy to Azure Logic App
-      uses: Azure/functions-action@v1.3.1
-      id: la
-      with:
-        app-name: ${{secrets.AZURE_RESOURCE_GROUP}}
-        package: './output/logicAppWorkflow.zip'
-        publish-profile: ${{steps.publishprofile.outputs.profile}}
-   
+      - name: Get publish Profile
+        id: publishprofile
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $profile = Get-AzWebAppPublishingProfile `
+                -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP }} `
+                -Name ${{ env.LOGIC_APP_NAME }}
+            $profile = $profile.Replace("`r", "").Replace("`n", "")
+            Write-Output "::set-output name=profile::$profile"
+          azPSVersion: latest
 
+      - name: Deploy to Azure Logic App
+        uses: Azure/functions-action@v1.3.1
+        id: la
+        with:
+          app-name: ${{secrets.AZURE_RESOURCE_GROUP}}
+          package: "./output/logicAppWorkflow.zip"
+          publish-profile: ${{steps.publishprofile.outputs.profile}}

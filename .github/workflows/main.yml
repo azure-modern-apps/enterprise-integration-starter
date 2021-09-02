@@ -1,7 +1,10 @@
 on:
-  workflow_dispatch:
   push:
-    branches: [feature/logic-app-workflow]
+    # Trigger only when any file change is detected within the path attribute.
+    branches: [main]
+    paths:
+      - "templates/**"
+      - ".github/workflows/main.yml"
 
 name: Bicep EIS Deployment
 
