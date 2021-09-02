@@ -21,16 +21,7 @@ resource appServicePlanLogicApp 'Microsoft.Web/serverfarms@2018-02-01' = {
     capacity: logicAppAspSku.capacity
   }
   kind: 'elastic'
-  properties: {
-    perSiteScaling: false
-    maximumElasticWorkerCount: 20
-    isSpot: false
-    reserved: false
-    isXenon: false
-    hyperV: false
-    targetWorkerCount: 0
-    targetWorkerSizeId: 0
-  }
+  properties: {}
 }
 
 resource appServiceLogicApp 'Microsoft.Web/sites@2018-11-01' = {
@@ -55,22 +46,11 @@ resource appServiceLogicApp 'Microsoft.Web/sites@2018-11-01' = {
       }
     ]
     serverFarmId: appServicePlanLogicApp.id
-    reserved: false
-    isXenon: false
-    hyperV: false
     siteConfig: {
       numberOfWorkers: 1
       alwaysOn: false
       http20Enabled: false
     }
-    scmSiteAlsoStopped: false
-    clientAffinityEnabled: false
-    clientCertEnabled: false
-    hostNamesDisabled: false
-    containerSize: 1536
-    dailyMemoryTimeQuota: 0
-    httpsOnly: false
-    redundancyMode: 'None'
   }
 }
 

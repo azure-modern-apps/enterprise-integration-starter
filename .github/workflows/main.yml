@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [main]
+    branches: [feature/logic-app-template]
 name: Bicep EIS Deployment
 jobs:
   build-and-deploy:
