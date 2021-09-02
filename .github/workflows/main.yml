@@ -1,7 +1,10 @@
 on:
+  workflow_dispatch:
   push:
-    branches: [main]
+    branches: [feature/logic-app-workflow]
+
 name: Bicep EIS Deployment
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
