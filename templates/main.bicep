@@ -29,7 +29,7 @@ module logicAppModule './logicApp.bicep' = {
 }
 
 module networkingModule './networking.bicep' = {
-  name: 'rg-deploy-${logicAppName}'
+  name: 'rg-deploy-vnet'
   params: {
     vnetName: vnetName
     logicAppSubnetName: logicAppSubnetName
