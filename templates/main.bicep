@@ -6,6 +6,10 @@ param logicAppAspSku object
 param vnetName string
 param logicAppSubnetName string
 param networking object
+param dnsZoneName string
+param logicAppPrivateLinkName string
+param logicAppPrivateEndpointName string
+
 
 module storageAccountModule './storageAccount.bicep' = {
   name: 'rg-deploy-${storageAccountName}'
@@ -35,6 +39,9 @@ module networkingModule './networking.bicep' = {
     logicAppSubnetName: logicAppSubnetName
     logicAppName: logicAppName
     networking: networking
+    dnsZoneName: dnsZoneName
+    logicAppPrivateLinkName: logicAppPrivateLinkName
+    logicAppPrivateEndpointName: logicAppPrivateEndpointName
   }
   dependsOn: [
     logicAppModule

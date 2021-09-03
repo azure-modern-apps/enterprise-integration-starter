@@ -35,6 +35,15 @@
           "defaultSnetAddressPrefix": "10.0.0.0/24",
           "logicAppsSnetAddressPrefix": "10.0.1.0/24"
       }
+    },
+    "dnsZoneName": {
+      "value": "privatelink.azurewebsites.net"
+    },
+    "logicAppPrivateLinkName": {
+      "value": "pl-eis-dev-auea-logic"
+    },
+    "logicAppPrivateEndpointName": {
+      "value": "pe-eis-dev-auea-logic"
     }
   }
 }

@@ -2,6 +2,9 @@ param vnetName string
 param logicAppSubnetName string
 param logicAppName string
 param networking object
+param dnsZoneName string
+param logicAppPrivateLinkName string
+param logicAppPrivateEndpointName string
 
 
 //vnet
@@ -63,3 +66,54 @@ resource logicAppAttachSubnet 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
     subnetResourceId: logicAppSubnet.id
   }
 }
+
+// Logic App Dns Zone and Private Endpoint
+resource dnsZone 'Microsoft.Network/privateDnsZones@2018-09-01' = {
+  name: dnsZoneName
+  location: 'global'
+  dependsOn: [
+    vnet
+    logicAppAttachSubnet
+  ]
+}
+
+resource privateLinkLogicApp 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = {
+  parent: dnsZone
+  name: logicAppPrivateLinkName
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnet.id
+    }
+  }
+}
+
+// Existing Logic App Subnet
+resource defaultSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' existing = {
+  parent: vnet
+  name: 'default'
+}
+
+
+resource privateEndpointLogicApp 'Microsoft.Network/privateEndpoints@2020-11-01' = {
+  name: logicAppPrivateEndpointName
+  location: resourceGroup().location
+  properties: {
+    subnet: {
+      id: defaultSubnet.id
+    }
+    privateLinkServiceConnections: [
+      {
+        name: logicAppPrivateEndpointName
+        properties: {
+          privateLinkServiceId: logicApp.id
+          groupIds: [
+            'sites'
+          ]
+        }
+      }
+    ]
+  }
+}
+
