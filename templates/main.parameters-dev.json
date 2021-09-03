@@ -22,6 +22,28 @@
     },
     "logicAppName": {
       "value": "logic-eis-dev-auea"
+    },
+    "vnetName": {
+      "value": "vnet-eis-dev-auea"
+    },
+    "vnetAddressPrefix": {
+      "value": ""
+    },
+    "defaultSnetAddressPrefix": {
+      "value": ""
+    },
+    "logicAppSubnetName": {
+      "value": "snet-eis-dev-auea-logic"
+    },
+    "logicAppSubnetPrefix": {
+      "value": ""
+    },
+    "networking": {
+      "value": {
+          "vnetAddressPrefix": "10.0.0.0/16",
+          "defaultSnetAddressPrefix": "10.0.0.0/24",
+          "logicAppsSnetAddressPrefix": "10.0.1.0/24"
+      }
     }
   }
 }
