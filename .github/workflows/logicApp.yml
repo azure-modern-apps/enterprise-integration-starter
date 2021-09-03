@@ -3,10 +3,6 @@
 
 name: Build and Deploy Logic App
 
-env:
-  #TODO: Need to set this at environment level when/if we setup GitHub environments.
-  LOGIC_APP_NAME: "logic-eis-dev-auea"
-
 on:
   workflow_dispatch:
   # Trigger the workflow every time the Bicep EIS Deployment workflow ran to completion
@@ -65,7 +61,7 @@ jobs:
           inlineScript: |
             $profile = Get-AzWebAppPublishingProfile `
                 -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP }} `
-                -Name ${{ env.LOGIC_APP_NAME }}
+                -Name ${{ secrets.LOGIC_APP_NAME }}
             $profile = $profile.Replace("`r", "").Replace("`n", "")
             Write-Output "::set-output name=profile::$profile"
           azPSVersion: latest
