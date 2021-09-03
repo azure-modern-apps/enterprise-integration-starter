@@ -14,27 +14,32 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
         networking.vnetAddressPrefix
       ]
     }
-  }
-}
-
-//subnets
-resource subnetDefault 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' = {
-  parent: vnet
-  name: 'default'
-  properties: {
-    addressPrefix: networking.defaultSnetAddressPrefix
-    privateEndpointNetworkPolicies: 'Disabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-  }
-}
-
-resource subnetLogicApp 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' = {
-  parent: vnet
-  name: logicAppSubnetName
-  properties: {
-    addressPrefix: networking.logicAppsSnetAddressPrefix
-    privateEndpointNetworkPolicies: 'Disabled'
-    privateLinkServiceNetworkPolicies: 'Disabled'
+    //Defining subnets in the same resource instead of seperate child properties so the subnet 
+    //redeployment will not fail. 
+    subnets: [
+      {
+        name: 'default'
+        properties: {
+          addressPrefix: networking.defaultSnetAddressPrefix
+        }
+      }
+      {
+        name: logicAppSubnetName
+        properties: {
+          addressPrefix: networking.logicAppsSnetAddressPrefix
+          delegations: [
+            {
+              name: 'delegation'
+              properties: {
+                serviceName: 'Microsoft.Web/serverfarms'
+              }
+            }
+          ]
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Disabled'
+        }
+      }
+    ]
   }
 }
 
@@ -43,15 +48,18 @@ resource logicApp 'Microsoft.Web/sites@2020-12-01' existing = {
   name: logicAppName
 }
 
+// Existing Logic App Subnet
+resource logicAppSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' existing = {
+  parent: vnet
+  name: logicAppSubnetName
+}
+
+
 //Attach logic app subnet
 resource logicAppAttachSubnet 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
   parent: logicApp
   name: 'virtualNetwork'
   properties: {
-    subnetResourceId: subnetLogicApp.id
+    subnetResourceId: logicAppSubnet.id
   }
 }
-
-
-
-
