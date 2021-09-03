@@ -1,7 +1,13 @@
 on:
   push:
+    # Trigger only when any file change is detected within the path attribute.
     branches: [main]
+    paths:
+      - "templates/**"
+      - ".github/workflows/main.yml"
+
 name: Bicep EIS Deployment
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
