@@ -22,6 +22,28 @@
     },
     "logicAppName": {
       "value": "logic-eis-dev-auea"
+    },
+    "vnetName": {
+      "value": "vnet-eis-dev-auea"
+    },
+    "logicAppSubnetName": {
+      "value": "snet-eis-dev-auea-logic"
+    },
+    "networking": {
+      "value": {
+          "vnetAddressPrefix": "10.0.0.0/16",
+          "defaultSnetAddressPrefix": "10.0.0.0/24",
+          "logicAppsSnetAddressPrefix": "10.0.1.0/24"
+      }
+    },
+    "dnsZoneName": {
+      "value": "privatelink.azurewebsites.net"
+    },
+    "logicAppPrivateLinkName": {
+      "value": "pl-eis-dev-auea-logic"
+    },
+    "logicAppPrivateEndpointName": {
+      "value": "pe-eis-dev-auea-logic"
     }
   }
 }
