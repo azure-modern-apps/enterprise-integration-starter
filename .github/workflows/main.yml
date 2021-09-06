@@ -1,7 +1,7 @@
 on:
   push:
     # Trigger only when any file change is detected within the path attribute.
-    branches: [main]
+    branches: [feature/networking-private-link]
     paths:
       - "templates/**"
       - ".github/workflows/main.yml"
