@@ -2,7 +2,8 @@ param vnetName string
 param logicAppSubnetName string
 param logicAppName string
 param networking object
-param dnsZoneName string
+param dnsZoneNameSites string
+param dnsZoneNameStorage string
 param logicAppPrivateLinkName string
 param logicAppPrivateEndpointName string
 
@@ -70,8 +71,8 @@ resource logicAppAttachSubnet 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
 }
 
 // Logic App Dns Zone and Private Endpoint
-resource dnsZone 'Microsoft.Network/privateDnsZones@2018-09-01' = {
-  name: dnsZoneName
+resource dnsZoneSites 'Microsoft.Network/privateDnsZones@2018-09-01' = {
+  name: dnsZoneNameSites
   location: 'global'
   dependsOn: [
     vnet
@@ -79,43 +80,33 @@ resource dnsZone 'Microsoft.Network/privateDnsZones@2018-09-01' = {
   ]
 }
 
-resource privateLinkLogicApp 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = {
-  parent: dnsZone
-  name: logicAppPrivateLinkName
+resource dnsZoneBlob 'Microsoft.Network/privateDnsZones@2018-09-01' = {
+  name: dnsZoneNameStorage
   location: 'global'
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: vnet.id
-    }
-  }
+  dependsOn: [
+    vnet
+    logicAppAttachSubnet
+  ]
 }
 
-// Existing Logic App Subnet
 resource defaultSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' existing = {
   parent: vnet
   name: 'default'
 }
 
-
-resource privateEndpointLogicApp 'Microsoft.Network/privateEndpoints@2020-11-01' = {
-  name: logicAppPrivateEndpointName
-  location: resourceGroup().location
-  properties: {
-    subnet: {
-      id: defaultSubnet.id
-    }
-    privateLinkServiceConnections: [
-      {
-        name: logicAppPrivateEndpointName
-        properties: {
-          privateLinkServiceId: logicApp.id
-          groupIds: [
-            'sites'
-          ]
-        }
-      }
-    ]
+module privateEndpointLogicApp './networkingPrivateEndpoint.bicep' = {
+  name: 'private-endpoint-logic-app-deploy'
+  params: {
+    dnsZoneName: dnsZoneNameSites
+    privateLinkName: logicAppPrivateLinkName
+    privateEndpointName:logicAppPrivateEndpointName
+    serviceId: logicApp.id
+    groupId: 'sites'
+    snetId: defaultSubnet.id
+    vnetId: vnet.id 
   }
+  dependsOn: [
+    vnet
+    defaultSubnet
+  ]
 }
-

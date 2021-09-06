@@ -6,7 +6,8 @@ param logicAppAspSku object
 param vnetName string
 param logicAppSubnetName string
 param networking object
-param dnsZoneName string
+param dnsZoneNameSites string
+param dnsZoneNameStorage string
 param logicAppPrivateLinkName string
 param logicAppPrivateEndpointName string
 
@@ -39,7 +40,8 @@ module networkingModule './networking.bicep' = {
     logicAppSubnetName: logicAppSubnetName
     logicAppName: logicAppName
     networking: networking
-    dnsZoneName: dnsZoneName
+    dnsZoneNameSites: dnsZoneNameSites
+    dnsZoneNameStorage: dnsZoneNameStorage
     logicAppPrivateLinkName: logicAppPrivateLinkName
     logicAppPrivateEndpointName: logicAppPrivateEndpointName
   }
