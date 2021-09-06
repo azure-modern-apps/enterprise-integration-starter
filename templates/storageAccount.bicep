@@ -11,11 +11,13 @@ param storageAccountType string = 'Standard_LRS'
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName
   location: resourceGroup().location
+
   sku: {
     name: storageAccountType
   }
-  kind: 'Storage'
+  kind: 'StorageV2'
   properties: {
+    accessTier: 'Hot'
     minimumTlsVersion: 'TLS1_2'
     networkAcls: {
       bypass: 'AzureServices'
@@ -24,6 +26,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
       defaultAction: 'Allow'
     }
     supportsHttpsTrafficOnly: true
+    routingPreference: {
+      routingChoice: 'MicrosoftRouting'
+      publishMicrosoftEndpoints: false
+      publishInternetEndpoints: false
+    }
     encryption: {
       services: {
         file: {
@@ -39,6 +46,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
     }
   }
 }
+
 
 output storageAccountDetails object = {
   apiVersion: storageAccount.apiVersion

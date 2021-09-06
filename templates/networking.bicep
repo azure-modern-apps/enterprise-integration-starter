@@ -6,6 +6,9 @@ param dnsZoneNameSites string
 param dnsZoneNameStorage string
 param logicAppPrivateLinkName string
 param logicAppPrivateEndpointName string
+param storageAccountName string
+param storageAccountPrivateLinkName string
+param storageAccountPrivateEndpointName string
 
 
 //vnet
@@ -110,3 +113,24 @@ module privateEndpointLogicApp './networkingPrivateEndpoint.bicep' = {
     defaultSubnet
   ]
 }
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: storageAccountName
+}
+module privateEndpointStorageBlob './networkingPrivateEndpoint.bicep' = {
+  name: 'private-endpoint-blob-deploy'
+  params: {
+    dnsZoneName: dnsZoneNameStorage
+    privateLinkName: storageAccountPrivateLinkName
+    privateEndpointName:storageAccountPrivateEndpointName
+    serviceId: storageAccount.id
+    groupId: 'blob'
+    snetId: defaultSubnet.id
+    vnetId: vnet.id 
+  }
+  dependsOn: [
+    vnet
+    defaultSubnet
+  ]
+}
+
