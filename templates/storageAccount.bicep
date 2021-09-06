@@ -47,7 +47,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-
 output storageAccountDetails object = {
   apiVersion: storageAccount.apiVersion
   id: storageAccount.id

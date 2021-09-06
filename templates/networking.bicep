@@ -10,8 +10,6 @@ param storageAccountName string
 param storageAccountPrivateLinkName string
 param storageAccountPrivateEndpointName string
 
-
-//vnet
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   name: vnetName
   location: resourceGroup().location
@@ -52,19 +50,15 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   }
 }
 
-// Existing Logic App
 resource logicApp 'Microsoft.Web/sites@2020-12-01' existing = {
   name: logicAppName
 }
 
-// Existing Logic App Subnet
 resource logicAppSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' existing = {
   parent: vnet
   name: logicAppSubnetName
 }
 
-
-//Attach logic app subnet
 resource logicAppAttachSubnet 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
   parent: logicApp
   name: 'virtualNetwork'
@@ -78,7 +72,7 @@ resource defaultSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' ex
   name: 'default'
 }
 
-module privateEndpointLogicApp './networkingPrivateEndpoint.bicep' = {
+module privateEndpointLogicAppModule './networkingPrivateEndpoint.bicep' = {
   name: 'private-endpoint-logic-app-deploy'
   params: {
     dnsZoneName: dnsZoneNameSites
@@ -98,7 +92,8 @@ module privateEndpointLogicApp './networkingPrivateEndpoint.bicep' = {
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
   name: storageAccountName
 }
-module privateEndpointStorageBlob './networkingPrivateEndpoint.bicep' = {
+
+module privateEndpointStorageBlobModule './networkingPrivateEndpoint.bicep' = {
   name: 'private-endpoint-blob-deploy'
   params: {
     dnsZoneName: dnsZoneNameStorage
