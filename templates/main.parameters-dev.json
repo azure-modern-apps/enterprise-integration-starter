@@ -36,14 +36,23 @@
           "logicAppsSnetAddressPrefix": "10.0.1.0/24"
       }
     },
-    "dnsZoneName": {
+    "dnsZoneNameSites": {
       "value": "privatelink.azurewebsites.net"
+    },
+    "dnsZoneNameStorage": {
+      "value": "privatelink.blob.core.windows.net"
     },
     "logicAppPrivateLinkName": {
       "value": "pl-eis-dev-auea-logic"
     },
     "logicAppPrivateEndpointName": {
       "value": "pe-eis-dev-auea-logic"
+    },
+    "storageAccountPrivateLinkName": {
+      "value": "pl-eis-dev-auea-storage"
+    },
+    "storageAccountPrivateEndpointName": {
+      "value": "pe-eis-dev-auea-storage"
     }
   }
 }

@@ -1,4 +1,5 @@
 on:
+  workflow_dispatch:
   push:
     # Trigger only when any file change is detected within the path attribute.
     branches: [main]
