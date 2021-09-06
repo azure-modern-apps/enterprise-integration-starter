@@ -73,25 +73,6 @@ resource logicAppAttachSubnet 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
   }
 }
 
-// Logic App Dns Zone and Private Endpoint
-resource dnsZoneSites 'Microsoft.Network/privateDnsZones@2018-09-01' = {
-  name: dnsZoneNameSites
-  location: 'global'
-  dependsOn: [
-    vnet
-    logicAppAttachSubnet
-  ]
-}
-
-resource dnsZoneBlob 'Microsoft.Network/privateDnsZones@2018-09-01' = {
-  name: dnsZoneNameStorage
-  location: 'global'
-  dependsOn: [
-    vnet
-    logicAppAttachSubnet
-  ]
-}
-
 resource defaultSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' existing = {
   parent: vnet
   name: 'default'

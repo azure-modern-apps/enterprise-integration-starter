@@ -8,7 +8,6 @@ param vnetId string
 
 var location = resourceGroup().location
 
-// Logic App Dns Zone and Private Endpoint
 resource dnsZone 'Microsoft.Network/privateDnsZones@2018-09-01' = {
   name: dnsZoneName
   location: 'global'
