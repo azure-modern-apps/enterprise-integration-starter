@@ -33,7 +33,9 @@
       "value": {
           "vnetAddressPrefix": "10.0.0.0/16",
           "defaultSnetAddressPrefix": "10.0.0.0/24",
-          "logicAppsSnetAddressPrefix": "10.0.1.0/24"
+          "logicAppsSnetAddressPrefix": "10.0.1.0/24",
+          "apimSnetAddressPrefix": "10.0.2.0/24",
+          "applicationGatewaySnetAddressPrefix": "10.0.3.0/24"
       }
     },
     "dnsZoneNameSites": {
@@ -53,6 +55,19 @@
     },
     "storageAccountPrivateEndpointName": {
       "value": "pe-eis-dev-auea-storage"
+    },
+    "applicationGatewayProperties": {
+      "value": {
+        "applicationGatewayName": "agw-eis-dev-auea",
+        "applicationGatewaySubnetName": "snet-eis-dev-auea-agw-vnext",
+        "tier": "Standard_v2",
+        "sku": "Standard",
+        "skuSize": "Standard_v2",
+        "capacity": 1,
+        "subnetName": "snet-eis-dev-auea-agw",
+        "publicIpAddressName": "ip-public",
+        "allocationMethod": "Static"
+      }
     }
   }
 }

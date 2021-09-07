@@ -1,5 +1,7 @@
 param vnetName string
 param logicAppSubnetName string
+param apimSubnetName string
+param applicationGatewaySubnetName string
 param logicAppName string
 param networking object
 param dnsZoneNameSites string
@@ -44,6 +46,22 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
           ]
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Disabled'
+        }
+      }
+      {
+        name: apimSubnetName
+        properties: {
+          addressPrefix: networking.applicationGatewaySnetAddressPrefix
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+        }
+      }
+      {
+        name: applicationGatewaySubnetName
+        properties: {
+          addressPrefix: networking.applicationGatewaySnetAddressPrefix
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
     ]
