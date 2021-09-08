@@ -1,6 +1,8 @@
 param storageAccountName string
 param storageAccountType string
 param logicAppName string
+param applicationGatewaySubnetName string
+param apimSubnetName string
 param logicAppAspName string
 param logicAppAspSku object
 param vnetName string
@@ -13,6 +15,7 @@ param logicAppPrivateEndpointName string
 param storageAccountPrivateLinkName string
 param storageAccountPrivateEndpointName string
 param applicationGatewayProperties object
+param apimProperties object
 
 module storageAccountModule './storageAccount.bicep' = {
   name: 'rg-deploy-${storageAccountName}'
@@ -40,8 +43,8 @@ module networkingModule './networking.bicep' = {
   params: {
     vnetName: vnetName
     logicAppSubnetName: logicAppSubnetName
-    apimSubnetName: applicationGatewayProperties.apimSnetAddressPrefix
-    applicationGatewaySubnetName: applicationGatewayProperties.applicationGatewaySubnetName
+    apimSubnetName: apimSubnetName
+    applicationGatewaySubnetName: applicationGatewaySubnetName
     logicAppName: logicAppName
     vnetAddressPrefix: networking.vnetAddressPrefix
     defaultSnetAddressPrefix: networking.defaultSnetAddressPrefix
@@ -59,6 +62,30 @@ module networkingModule './networking.bicep' = {
     logicAppModule
   ]
 }
+
+module apimModule './apim.bicep' = {
+  name: 'rg-deploy-apim'
+  params: {
+    vnetName: vnetName
+    apimName: apimProperties.apimName
+    logicAppName: logicAppName
+    apimSkuName: apimProperties.sku.name
+    apimSkuCapacity: apimProperties.sku.capacity
+    apimSubnetName: apimSubnetName
+    apimUserFirstName: apimProperties.apimUserFirstName
+    apimUserLastName: apimProperties.apimUserLastName
+    publisherUserEmail: apimProperties.publisherEmail
+    publisherName: apimProperties.publisherName
+    notificationSenderEmail: apimProperties.notificationSenderEmail
+    workflowTriggerUrl: ''
+    logicAppResouceId: ''
+    logicAppWorkflowSignature: ''
+  }
+  dependsOn: [
+    networkingModule
+  ]
+}
+
 
 module applicationGatewayModule './applicationGateway.bicep' = {
   name: 'rg-deploy-application-gateway'
