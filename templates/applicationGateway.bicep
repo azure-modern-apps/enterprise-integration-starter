@@ -38,7 +38,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2020-08-01' = {
   }
 }
 
-resource applicationGatewayName_resource 'Microsoft.Network/applicationGateways@2019-09-01' = {
+resource applicationGateway 'Microsoft.Network/applicationGateways@2019-09-01' = {
   name: applicationGatewayName
   location: resourceGroup().location
   properties: {
@@ -95,8 +95,6 @@ resource applicationGatewayName_resource 'Microsoft.Network/applicationGateways@
           protocol: 'Http'
           cookieBasedAffinity: 'Disabled'
           hostName: logicAppHostName
-          pickHostNameFromBackendAddress: false
-          requestTimeout: 20
           probe: {
             id: resourceId('Microsoft.Network/applicationGateways/probes', applicationGatewayName, healthProbeLogicApp)
           }
@@ -143,15 +141,8 @@ resource applicationGatewayName_resource 'Microsoft.Network/applicationGateways@
           protocol: 'Http'
           host: logicAppHostName
           path: '/'
-          interval: 30
-          timeout: 30
-          unhealthyThreshold: 3
-          pickHostNameFromBackendHttpSettings: false
-          minServers: 0
-          match: {}
         }
       }
     ]
-    enableHttp2: false
   }
 }

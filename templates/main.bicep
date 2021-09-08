@@ -43,7 +43,10 @@ module networkingModule './networking.bicep' = {
     apimSubnetName: applicationGatewayProperties.apimSnetAddressPrefix
     applicationGatewaySubnetName: applicationGatewayProperties.applicationGatewaySubnetName
     logicAppName: logicAppName
-    networking: networking
+    vnetAddressPrefix: networking.vnetAddressPrefix
+    defaultSnetAddressPrefix: networking.defaultSnetAddressPrefix
+    logicAppsSnetAddressPrefix: networking.logicAppsSnetAddressPrefix
+    applicationGatewaySnetAddressPrefix: networking.applicationGatewaySnetAddressPrefix
     dnsZoneNameSites: dnsZoneNameSites
     dnsZoneNameStorage: dnsZoneNameStorage
     logicAppPrivateLinkName: logicAppPrivateLinkName
