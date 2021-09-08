@@ -1,7 +1,12 @@
 param vnetName string
 param logicAppSubnetName string
+param apimSubnetName string
+param applicationGatewaySubnetName string
 param logicAppName string
-param networking object
+param vnetAddressPrefix string
+param defaultSnetAddressPrefix string
+param logicAppsSnetAddressPrefix string
+param applicationGatewaySnetAddressPrefix string
 param dnsZoneNameSites string
 param dnsZoneNameStorage string
 param logicAppPrivateLinkName string
@@ -16,7 +21,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        networking.vnetAddressPrefix
+        vnetAddressPrefix
       ]
     }
     //Defining subnets in the same resource instead of seperate child properties so the subnet 
@@ -25,7 +30,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
       {
         name: 'default'
         properties: {
-          addressPrefix: networking.defaultSnetAddressPrefix
+          addressPrefix: defaultSnetAddressPrefix
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Enabled'
         }
@@ -33,7 +38,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
       {
         name: logicAppSubnetName
         properties: {
-          addressPrefix: networking.logicAppsSnetAddressPrefix
+          addressPrefix: logicAppsSnetAddressPrefix
           delegations: [
             {
               name: 'delegation'
@@ -44,6 +49,22 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
           ]
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Disabled'
+        }
+      }
+      {
+        name: apimSubnetName
+        properties: {
+          addressPrefix: applicationGatewaySnetAddressPrefix
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+        }
+      }
+      {
+        name: applicationGatewaySubnetName
+        properties: {
+          addressPrefix: applicationGatewaySnetAddressPrefix
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
     ]
