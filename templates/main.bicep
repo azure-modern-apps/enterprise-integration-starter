@@ -73,6 +73,7 @@ module apimModule './apim.bicep' = {
     publisherUserEmail: apimProperties.publisherEmail
     publisherName: apimProperties.publisherName
     notificationSenderEmail: apimProperties.notificationSenderEmail
+    apimResourcePrefix: apimProperties.apimResourcePrefix
   }
   dependsOn: [
     networkingModule

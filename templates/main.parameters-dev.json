@@ -62,7 +62,8 @@
         "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
         "capacity": 1,
         "publicIpAddressName": "ip-public",
-        "allocationMethod": "Static"
+        "allocationMethod": "Static",
+        "apimResourcePrefix": "https://management.azure.com"
 
       }
     }

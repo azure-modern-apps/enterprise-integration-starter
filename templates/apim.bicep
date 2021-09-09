@@ -7,6 +7,7 @@ param apimSubnetName string
 param publisherUserEmail string
 param publisherName string
 param notificationSenderEmail string
+param apimResourcePrefix string
 
 var logicAppBackendName = '${logicAppName}-backend'
 var logicAppNameValueName = '${logicAppName}-name-value'
@@ -68,7 +69,7 @@ resource logicAppBackend 'Microsoft.ApiManagement/service/backends@2021-01-01-pr
     description: logicAppName
     url: logicAppHostName
     protocol: 'http'
-    resourceId: 'https://management.azure.com/subscriptions/${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Web/sites/${logicAppName}'
+    resourceId: '${apimResourcePrefix}/subscriptions/${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Web/sites/${logicAppName}'
   }
 }
 
