@@ -18,14 +18,14 @@ jobs:
         # Log into Azure
       - uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
         # Deploy Bicep file
       - name: deploy
         uses: azure/arm-deploy@v1
         with:
-          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
+          resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_DEV }}
           template: ./templates/main.bicep
           parameters: ./templates/main.parameters-dev.json
           failOnStdErr: true
