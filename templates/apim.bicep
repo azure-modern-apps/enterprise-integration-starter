@@ -11,7 +11,7 @@ param notificationSenderEmail string
 var logicAppBackendName = '${logicAppName}-backend'
 var logicAppNameValueName = '${logicAppName}-name-value'
 var logicAppNameValueDisplayName = '${logicAppNameValueName}-request-invoke'
-var logicAppHostName = 'https://${logicAppName}.azurewebsites.net'
+var logicAppHostName = 'https://${logicAppName}.azurewebsites.net/api'
 
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' existing = {
   name: vnetName
