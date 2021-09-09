@@ -11,7 +11,7 @@ param notificationSenderEmail string
 var logicAppBackendName = '${logicAppName}-backend'
 var logicAppNameValueName = '${logicAppName}-name-value'
 var logicAppNameValueDisplayName = '${logicAppNameValueName}-request-invoke'
-var logicAppHostName = 'https://${logicAppName}.azurewebsites.net/api'
+var logicAppHostName = 'https://${logicAppName}.azurewebsites.net'
 
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' existing = {
   name: vnetName
@@ -68,7 +68,7 @@ resource logicAppBackend 'Microsoft.ApiManagement/service/backends@2021-01-01-pr
     description: logicAppName
     url: logicAppHostName
     protocol: 'http'
-    resourceId: logicApp.id
+    resourceId: 'https://management.azure.com/subscriptions/${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Web/sites/${logicAppName}'
   }
 }
 
@@ -91,34 +91,6 @@ resource logicAppServiceProperty 'Microsoft.ApiManagement/service/properties@201
     secret: true
   }
 }
-
-// resource apimServiceSubscription 'Microsoft.ApiManagement/service/subscriptions@2021-01-01-preview' = {
-//   parent: apim
-//   name: 'master'
-//   properties: {
-//     scope: '${apim.id}/'
-//     displayName: 'Built-in all-access subscription'
-//     state: 'active'
-//     allowTracing: true
-//   }
-// }
-
-// resource apimServiveUser 'Microsoft.ApiManagement/service/users@2021-01-01-preview' = {
-//   parent: apim
-//   name: '1'
-//   properties: {
-//     firstName: apimUserFirstName
-//     lastName: apimUserLastName
-//     email: publisherUserEmail
-//     state: 'active'
-//     identities: [
-//       {
-//         provider: 'Azure'
-//         id: publisherUserEmail
-//       }
-//     ]
-//   }
-// }
 
 resource logicAppApiSchema 'Microsoft.ApiManagement/service/apis/schemas@2021-01-01-preview' = {
   parent: logicAppApi
