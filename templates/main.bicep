@@ -1,13 +1,10 @@
 param storageAccountName string
 param storageAccountType string
 param logicAppName string
-param applicationGatewaySubnetName string
-param apimSubnetName string
 param logicAppAspName string
 param logicAppAspSku object
 param vnetName string
-param logicAppSubnetName string
-param networking object
+param subnets object
 param dnsZoneNameSites string
 param dnsZoneNameStorage string
 param logicAppPrivateLinkName string
@@ -42,14 +39,14 @@ module networkingModule './networking.bicep' = {
   name: 'rg-deploy-vnet'
   params: {
     vnetName: vnetName
-    logicAppSubnetName: logicAppSubnetName
-    apimSubnetName: apimSubnetName
-    applicationGatewaySubnetName: applicationGatewaySubnetName
+    logicAppSubnetName: subnets.logicAppSubnetName
+    apimSubnetName: subnets.apimSubnetName
+    applicationGatewaySubnetName: subnets.applicationGatewaySubnetName
     logicAppName: logicAppName
-    vnetAddressPrefix: networking.vnetAddressPrefix
-    defaultSnetAddressPrefix: networking.defaultSnetAddressPrefix
-    logicAppsSnetAddressPrefix: networking.logicAppsSnetAddressPrefix
-    applicationGatewaySnetAddressPrefix: networking.applicationGatewaySnetAddressPrefix
+    vnetAddressPrefix: subnets.vnetAddressPrefix
+    defaultSnetAddressPrefix: subnets.defaultSnetAddressPrefix
+    logicAppsSnetAddressPrefix: subnets.logicAppsSnetAddressPrefix
+    applicationGatewaySnetAddressPrefix: subnets.applicationGatewaySnetAddressPrefix
     dnsZoneNameSites: dnsZoneNameSites
     dnsZoneNameStorage: dnsZoneNameStorage
     logicAppPrivateLinkName: logicAppPrivateLinkName
@@ -71,7 +68,7 @@ module apimModule './apim.bicep' = {
     logicAppName: logicAppName
     apimSkuName: apimProperties.sku.name
     apimSkuCapacity: apimProperties.sku.capacity
-    apimSubnetName: apimSubnetName
+    apimSubnetName: subnets.apimSubnetName
     apimUserFirstName: apimProperties.apimUserFirstName
     apimUserLastName: apimProperties.apimUserLastName
     publisherUserEmail: apimProperties.publisherEmail

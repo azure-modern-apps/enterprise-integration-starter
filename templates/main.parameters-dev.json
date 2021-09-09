@@ -26,21 +26,15 @@
     "vnetName": {
       "value": "vnet-eis-dev-auea"
     },
-    "logicAppSubnetName": {
-      "value": "snet-eis-dev-auea-logic"
-    },
-    "apimSubnetName": {
-      "value": "snet-eis-dev-auea-apim"
-    },
-    "applicationGatewaySubnetName": {
-      "value": "snet-eis-dev-auea-agw"
-    },
-    "networking": {
+    "subnets": {
       "value": {
           "vnetAddressPrefix": "10.0.0.0/16",
           "defaultSnetAddressPrefix": "10.0.0.0/24",
+          "logicAppSubnetName": "snet-eis-dev-auea-logic",
           "logicAppsSnetAddressPrefix": "10.0.1.0/24",
+          "apimSubnetName": "snet-eis-dev-auea-apim",
           "apimSnetAddressPrefix": "10.0.2.0/24",
+          "applicationGatewaySubnetName": "snet-eis-dev-auea-agw",
           "applicationGatewaySnetAddressPrefix": "10.0.3.0/24"
       }
     },

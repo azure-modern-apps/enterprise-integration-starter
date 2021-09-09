@@ -107,7 +107,6 @@ resource logicAppServiceProperty 'Microsoft.ApiManagement/service/properties@201
   }
 }
 
-
 resource apimServiceSubscription 'Microsoft.ApiManagement/service/subscriptions@2021-01-01-preview' = {
   parent: apim
   name: 'master'

@@ -114,20 +114,21 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing 
   name: storageAccountName
 }
 
-module privateEndpointStorageBlobModule './networkingPrivateEndpoint.bicep' = {
-  name: 'private-endpoint-blob-deploy'
-  params: {
-    dnsZoneName: dnsZoneNameStorage
-    privateLinkName: storageAccountPrivateLinkName
-    privateEndpointName:storageAccountPrivateEndpointName
-    serviceId: storageAccount.id
-    groupId: 'blob'
-    snetId: defaultSubnet.id
-    vnetId: vnet.id 
-  }
-  dependsOn: [
-    vnet
-    defaultSubnet
-  ]
-}
+//TODO: uncomment once the private build agent is setup. 
+// module privateEndpointStorageBlobModule './networkingPrivateEndpoint.bicep' = {
+//   name: 'private-endpoint-blob-deploy'
+//   params: {
+//     dnsZoneName: dnsZoneNameStorage
+//     privateLinkName: storageAccountPrivateLinkName
+//     privateEndpointName:storageAccountPrivateEndpointName
+//     serviceId: storageAccount.id
+//     groupId: 'blob'
+//     snetId: defaultSubnet.id
+//     vnetId: vnet.id 
+//   }
+//   dependsOn: [
+//     vnet
+//     defaultSubnet
+//   ]
+// }
 
