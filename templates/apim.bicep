@@ -13,6 +13,7 @@ var logicAppBackendName = '${logicAppName}-backend'
 var logicAppNameValueName = '${logicAppName}-name-value'
 var logicAppNameValueDisplayName = '${logicAppNameValueName}-request-invoke'
 var logicAppHostName = 'https://${logicAppName}.azurewebsites.net'
+var logicAppSchemaId = '${logicAppName}-schema'
 
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' existing = {
   name: vnetName
@@ -87,7 +88,7 @@ resource logicAppServiceProperty 'Microsoft.ApiManagement/service/properties@201
   name: logicAppNameValueName
   properties: {
     displayName: logicAppNameValueDisplayName
-    value: 'workflowsig'
+    value: 'Workflow signature placeholder.'
     tags: []
     secret: true
   }
@@ -95,7 +96,7 @@ resource logicAppServiceProperty 'Microsoft.ApiManagement/service/properties@201
 
 resource logicAppApiSchema 'Microsoft.ApiManagement/service/apis/schemas@2021-01-01-preview' = {
   parent: logicAppApi
-  name: '61380ca03c2ac30ec820f197'
+  name: logicAppSchemaId
   properties: {
     contentType: 'application/vnd.ms-azure-apim.swagger.definitions+json'
     document: {}
@@ -121,7 +122,7 @@ resource logicAppApiOperation 'Microsoft.ApiManagement/service/apis/operations@2
       representations: [
         {
           contentType: 'application/json'
-          schemaId: '61380ca03c2ac30ec820f197'
+          schemaId: logicAppSchemaId
           typeName: 'request-request'
           sample: '{}'
         }
@@ -134,7 +135,7 @@ resource logicAppApiOperation 'Microsoft.ApiManagement/service/apis/operations@2
         representations: [
           {
             contentType: 'application/json'
-            schemaId: '61380ca03c2ac30ec820f197'
+            schemaId: logicAppSchemaId
             typeName: 'RequestPathsInvokePost200ApplicationJsonResponse'
             sample: '{}'
           }
@@ -147,7 +148,7 @@ resource logicAppApiOperation 'Microsoft.ApiManagement/service/apis/operations@2
         representations: [
           {
             contentType: 'application/json'
-            schemaId: '61380ca03c2ac30ec820f197'
+            schemaId: logicAppSchemaId
             typeName: 'RequestPathsInvokePost500ApplicationJsonResponse'
             sample: '{}'
           }
