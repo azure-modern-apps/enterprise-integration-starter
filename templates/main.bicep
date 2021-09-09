@@ -5,12 +5,12 @@ param logicAppAspName string
 param logicAppAspSku object
 param vnetName string
 param subnets object
-param dnsZoneNameSites string
-param dnsZoneNameStorage string
-param logicAppPrivateLinkName string
-param logicAppPrivateEndpointName string
-param storageAccountPrivateLinkName string
-param storageAccountPrivateEndpointName string
+// param dnsZoneNameSites string
+// param dnsZoneNameStorage string
+// param logicAppPrivateLinkName string
+// param logicAppPrivateEndpointName string
+// param storageAccountPrivateLinkName string
+// param storageAccountPrivateEndpointName string
 param applicationGatewayProperties object
 param apimProperties object
 
@@ -47,13 +47,13 @@ module networkingModule './networking.bicep' = {
     defaultSnetAddressPrefix: subnets.defaultSnetAddressPrefix
     logicAppsSnetAddressPrefix: subnets.logicAppsSnetAddressPrefix
     applicationGatewaySnetAddressPrefix: subnets.applicationGatewaySnetAddressPrefix
-    dnsZoneNameSites: dnsZoneNameSites
-    dnsZoneNameStorage: dnsZoneNameStorage
-    logicAppPrivateLinkName: logicAppPrivateLinkName
-    logicAppPrivateEndpointName: logicAppPrivateEndpointName
-    storageAccountName: storageAccountName
-    storageAccountPrivateLinkName: storageAccountPrivateLinkName
-    storageAccountPrivateEndpointName: storageAccountPrivateEndpointName
+    // dnsZoneNameSites: dnsZoneNameSites
+    // dnsZoneNameStorage: dnsZoneNameStorage
+    // logicAppPrivateLinkName: logicAppPrivateLinkName
+    // logicAppPrivateEndpointName: logicAppPrivateEndpointName
+    // storageAccountName: storageAccountName
+    // storageAccountPrivateLinkName: storageAccountPrivateLinkName
+    // storageAccountPrivateEndpointName: storageAccountPrivateEndpointName
   }
   dependsOn: [
     logicAppModule
