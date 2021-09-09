@@ -6,6 +6,7 @@ param logicAppName string
 param vnetAddressPrefix string
 param defaultSnetAddressPrefix string
 param logicAppsSnetAddressPrefix string
+param apimSnetAddressPrefix string
 param applicationGatewaySnetAddressPrefix string
 // param dnsZoneNameSites string
 // param dnsZoneNameStorage string
@@ -54,7 +55,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
       {
         name: apimSubnetName
         properties: {
-          addressPrefix: applicationGatewaySnetAddressPrefix
+          addressPrefix: apimSnetAddressPrefix
           privateEndpointNetworkPolicies: 'Enabled'
           privateLinkServiceNetworkPolicies: 'Enabled'
         }
