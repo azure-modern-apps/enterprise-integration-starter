@@ -70,14 +70,9 @@ module apimModule './apim.bicep' = {
     apimSkuName: apimProperties.sku.name
     apimSkuCapacity: apimProperties.sku.capacity
     apimSubnetName: subnets.apimSubnetName
-    apimUserFirstName: apimProperties.apimUserFirstName
-    apimUserLastName: apimProperties.apimUserLastName
     publisherUserEmail: apimProperties.publisherEmail
     publisherName: apimProperties.publisherName
     notificationSenderEmail: apimProperties.notificationSenderEmail
-    workflowTriggerUrl: ''
-    logicAppResouceId: ''
-    logicAppWorkflowSignature: ''
   }
   dependsOn: [
     networkingModule

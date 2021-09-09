@@ -4,15 +4,9 @@ param vnetName string
 param apimSkuName string
 param apimSkuCapacity int
 param apimSubnetName string
-param apimUserFirstName string
-param apimUserLastName string
 param publisherUserEmail string
 param publisherName string
-param workflowTriggerUrl string
-param logicAppResouceId string
 param notificationSenderEmail string
-@secure()
-param logicAppWorkflowSignature string
 
 var logicAppBackendName = '${logicAppName}-backend'
 var logicAppNameValueName = '${logicAppName}-name-value'
@@ -23,6 +17,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' existing = {
   name: vnetName
 }
 
+resource logicApp 'Microsoft.Web/sites@2020-12-01' existing = {
+  name: logicAppName
+}
 resource apim 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
   name: apimName
   location: resourceGroup().location
@@ -55,7 +52,7 @@ resource logicAppApi 'Microsoft.ApiManagement/service/apis@2021-01-01-preview' =
     apiRevision: '1'
     description: logicAppName
     subscriptionRequired: true
-    serviceUrl: workflowTriggerUrl
+    serviceUrl: '/'
     path: 'logicapp'
     protocols: [
       'https'
@@ -69,9 +66,9 @@ resource logicAppBackend 'Microsoft.ApiManagement/service/backends@2021-01-01-pr
   name: logicAppBackendName
   properties: {
     description: logicAppName
-    url: workflowTriggerUrl
+    url: '/'
     protocol: 'http'
-    resourceId: logicAppResouceId
+    resourceId: logicApp.id
   }
 }
 
@@ -101,39 +98,39 @@ resource logicAppServiceProperty 'Microsoft.ApiManagement/service/properties@201
   name: logicAppNameValueName
   properties: {
     displayName: logicAppNameValueDisplayName
-    value: logicAppWorkflowSignature
+    value: 'workflowsig'
     tags: []
     secret: true
   }
 }
 
-resource apimServiceSubscription 'Microsoft.ApiManagement/service/subscriptions@2021-01-01-preview' = {
-  parent: apim
-  name: 'master'
-  properties: {
-    scope: '${apim.id}/'
-    displayName: 'Built-in all-access subscription'
-    state: 'active'
-    allowTracing: true
-  }
-}
+// resource apimServiceSubscription 'Microsoft.ApiManagement/service/subscriptions@2021-01-01-preview' = {
+//   parent: apim
+//   name: 'master'
+//   properties: {
+//     scope: '${apim.id}/'
+//     displayName: 'Built-in all-access subscription'
+//     state: 'active'
+//     allowTracing: true
+//   }
+// }
 
-resource apimServiveUser 'Microsoft.ApiManagement/service/users@2021-01-01-preview' = {
-  parent: apim
-  name: '1'
-  properties: {
-    firstName: apimUserFirstName
-    lastName: apimUserLastName
-    email: publisherUserEmail
-    state: 'active'
-    identities: [
-      {
-        provider: 'Azure'
-        id: publisherUserEmail
-      }
-    ]
-  }
-}
+// resource apimServiveUser 'Microsoft.ApiManagement/service/users@2021-01-01-preview' = {
+//   parent: apim
+//   name: '1'
+//   properties: {
+//     firstName: apimUserFirstName
+//     lastName: apimUserLastName
+//     email: publisherUserEmail
+//     state: 'active'
+//     identities: [
+//       {
+//         provider: 'Azure'
+//         id: publisherUserEmail
+//       }
+//     ]
+//   }
+// }
 
 resource logicAppApiSchema 'Microsoft.ApiManagement/service/apis/schemas@2021-01-01-preview' = {
   parent: logicAppApi
@@ -213,6 +210,7 @@ resource logicAppApiPolicy 'Microsoft.ApiManagement/service/apis/policies@2021-0
   }
   dependsOn: [
     apim
+    logicAppBackend
   ]
 }
 
@@ -226,5 +224,6 @@ resource logicAppApiOperationPolicy 'Microsoft.ApiManagement/service/apis/operat
   dependsOn: [
     logicAppApi
     apim
+    logicAppServiceProperty
   ]
 }

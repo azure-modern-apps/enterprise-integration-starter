@@ -57,8 +57,6 @@
           "name": "Developer",
           "capacity": 1
         },
-        "apimUserFirstName": "Admin",
-        "apimUserLastName": "Admin",
         "publisherEmail": "admin@test.com",
         "publisherName": "Microsoft",
         "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
