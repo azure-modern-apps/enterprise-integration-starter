@@ -11,7 +11,7 @@ param notificationSenderEmail string
 var logicAppBackendName = '${logicAppName}-backend'
 var logicAppNameValueName = '${logicAppName}-name-value'
 var logicAppNameValueDisplayName = '${logicAppNameValueName}-request-invoke'
-
+var logicAppHostName = 'https://${logicAppName}.azurewebsites.net'
 
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' existing = {
   name: vnetName
@@ -52,7 +52,7 @@ resource logicAppApi 'Microsoft.ApiManagement/service/apis@2021-01-01-preview' =
     apiRevision: '1'
     description: logicAppName
     subscriptionRequired: true
-    serviceUrl: '/'
+    serviceUrl: logicAppHostName
     path: 'logicapp'
     protocols: [
       'https'
@@ -66,23 +66,11 @@ resource logicAppBackend 'Microsoft.ApiManagement/service/backends@2021-01-01-pr
   name: logicAppBackendName
   properties: {
     description: logicAppName
-    url: '/'
+    url: logicAppHostName
     protocol: 'http'
     resourceId: logicApp.id
   }
 }
-
-
-resource logicAppNameValue 'Microsoft.ApiManagement/service/namedValues@2021-01-01-preview' = {
-  parent: apim
-  name: logicAppNameValueName
-  properties: {
-    displayName: logicAppNameValueDisplayName
-    tags: []
-    secret: true
-  }
-}
-
 
 resource logicAppServicePolicy 'Microsoft.ApiManagement/service/policies@2021-01-01-preview' = {
   parent: apim
