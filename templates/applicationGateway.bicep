@@ -94,6 +94,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2019-09-01' =
           port: 80
           protocol: 'Http'
           cookieBasedAffinity: 'Disabled'
+          requestTimeout: 20
           hostName: logicAppHostName
           probe: {
             id: resourceId('Microsoft.Network/applicationGateways/probes', applicationGatewayName, healthProbeLogicApp)
@@ -141,6 +142,12 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2019-09-01' =
           protocol: 'Http'
           host: logicAppHostName
           path: '/'
+          interval: 30
+          timeout: 30
+          unhealthyThreshold: 3
+          pickHostNameFromBackendHttpSettings: false
+          minServers: 0
+          match: {}
         }
       }
     ]
