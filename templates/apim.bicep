@@ -14,7 +14,7 @@ var logicAppNameValueName = '${logicAppName}-name-value'
 var logicAppNameValueTemplatePath = '${logicAppNameValueName}-template-path'
 var logicAppHostName = 'https://${logicAppName}.azurewebsites.net'
 var logicAppSchemaId = '${logicAppName}-schema'
-
+var logicAppPolicyRewriteUrl = '/manual/invoke/?api-version=2020-05-01-preview&amp;sp=/triggers/manual/run&amp;sv=1.0&amp;sig={{${logicAppNameValueTemplatePath}}}'
 
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' existing = {
   name: vnetName
@@ -104,7 +104,7 @@ resource logicAppApiOperation 'Microsoft.ApiManagement/service/apis/operations@2
   properties: {
     displayName: 'request-invoke'
     method: 'POST'
-    urlTemplate: '/request/paths/invoke'
+    urlTemplate: '/manual/invoke'
     templateParameters: []
     description: 'Trigger a run of the logic app.'
     request: {
@@ -159,7 +159,7 @@ resource logicAppApiPolicy 'Microsoft.ApiManagement/service/apis/policies@2021-0
   parent: logicAppApi
   name: 'policy'
   properties: {
-    value: '<policies>\r\n  <inbound>\r\n    <base />\r\n    <set-backend-service id="apim-generated-policy" backend-id="${logicAppBackendName}" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>'
+    value: '<policies>\r\n<inbound>\r\n<base />\r\n<set-backend-service id="apim-generated-policy" backend-id="${logicAppBackendName}" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n</backend>\r\n<outbound>\r\n<base />\r\n</outbound>\r\n<on-error>\r\n<base />\r\n</on-error>\r\n</policies>'
     format: 'xml'
   }
   dependsOn: [
@@ -172,7 +172,7 @@ resource logicAppApiOperationPolicy 'Microsoft.ApiManagement/service/apis/operat
   parent: logicAppApiOperation
   name: 'policy'
   properties: {
-    value: '<policies>\r\n  <inbound>\r\n    <base />\r\n    <set-method id="apim-generated-policy">POST</set-method>\r\n    <rewrite-uri id="apim-generated-policy" template="{{${logicAppNameValueTemplatePath}}}" />\r\n    <set-header id="apim-generated-policy" name="Ocp-Apim-Subscription-Key" exists-action="delete" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>'
+    value: '<policies>\r\n<inbound>\r\n<base />\r\n<set-method id="apim-generated-policy">POST</set-method>\r\n<rewrite-uri id="apim-generated-policy" template="${logicAppPolicyRewriteUrl}" />\r\n<set-header id="apim-generated-policy" name="Ocp-Apim-Subscription-Key" exists-action="delete" />\r\n</inbound>\r\n<backend>\r\n<base />\r\n</backend>\r\n<outbound>\r\n<base />\r\n</outbound>\r\n<on-error>\r\n<base />\r\n</on-error>\r\n</policies>'
     format: 'xml'
   }
   dependsOn: [
