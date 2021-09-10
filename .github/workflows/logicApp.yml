@@ -107,4 +107,5 @@ jobs:
             #Update APIM name value for logic app rewrite url signature
             $nameValueBody = '{\"properties\":{\"value\":\"' + $workflowResponse.queries.sig + '\"}}'
             az rest --method patch --uri "$apimRestApiBasePath/namedValues/${{ env.LA_NAME }}-name-value?api-version=2020-06-01-preview --body $nameValueBody
+          azPSVersion: latest
 
