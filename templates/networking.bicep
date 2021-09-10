@@ -6,14 +6,15 @@ param logicAppName string
 param vnetAddressPrefix string
 param defaultSnetAddressPrefix string
 param logicAppsSnetAddressPrefix string
+param apimSnetAddressPrefix string
 param applicationGatewaySnetAddressPrefix string
-param dnsZoneNameSites string
-param dnsZoneNameStorage string
-param logicAppPrivateLinkName string
-param logicAppPrivateEndpointName string
-param storageAccountName string
-param storageAccountPrivateLinkName string
-param storageAccountPrivateEndpointName string
+// param dnsZoneNameSites string
+// param dnsZoneNameStorage string
+// param logicAppPrivateLinkName string
+// param logicAppPrivateEndpointName string
+// param storageAccountName string
+// param storageAccountPrivateLinkName string
+// param storageAccountPrivateEndpointName string
 
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
   name: vnetName
@@ -54,7 +55,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
       {
         name: apimSubnetName
         properties: {
-          addressPrefix: applicationGatewaySnetAddressPrefix
+          addressPrefix: apimSnetAddressPrefix
           privateEndpointNetworkPolicies: 'Enabled'
           privateLinkServiceNetworkPolicies: 'Enabled'
         }
@@ -88,46 +89,47 @@ resource logicAppAttachSubnet 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
   }
 }
 
-resource defaultSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' existing = {
-  parent: vnet
-  name: 'default'
-}
+// resource defaultSubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' existing = {
+//   parent: vnet
+//   name: 'default'
+// }
 
-module privateEndpointLogicAppModule './networkingPrivateEndpoint.bicep' = {
-  name: 'private-endpoint-logic-app-deploy'
-  params: {
-    dnsZoneName: dnsZoneNameSites
-    privateLinkName: logicAppPrivateLinkName
-    privateEndpointName:logicAppPrivateEndpointName
-    serviceId: logicApp.id
-    groupId: 'sites'
-    snetId: defaultSubnet.id
-    vnetId: vnet.id 
-  }
-  dependsOn: [
-    vnet
-    defaultSubnet
-  ]
-}
+// module privateEndpointLogicAppModule './networkingPrivateEndpoint.bicep' = {
+//   name: 'private-endpoint-logic-app-deploy'
+//   params: {
+//     dnsZoneName: dnsZoneNameSites
+//     privateLinkName: logicAppPrivateLinkName
+//     privateEndpointName:logicAppPrivateEndpointName
+//     serviceId: logicApp.id
+//     groupId: 'sites'
+//     snetId: defaultSubnet.id
+//     vnetId: vnet.id 
+//   }
+//   dependsOn: [
+//     vnet
+//     defaultSubnet
+//   ]
+// }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
-  name: storageAccountName
-}
+// resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+//   name: storageAccountName
+// }
 
-module privateEndpointStorageBlobModule './networkingPrivateEndpoint.bicep' = {
-  name: 'private-endpoint-blob-deploy'
-  params: {
-    dnsZoneName: dnsZoneNameStorage
-    privateLinkName: storageAccountPrivateLinkName
-    privateEndpointName:storageAccountPrivateEndpointName
-    serviceId: storageAccount.id
-    groupId: 'blob'
-    snetId: defaultSubnet.id
-    vnetId: vnet.id 
-  }
-  dependsOn: [
-    vnet
-    defaultSubnet
-  ]
-}
+//TODO: uncomment once the private build agent is setup. 
+// module privateEndpointStorageBlobModule './networkingPrivateEndpoint.bicep' = {
+//   name: 'private-endpoint-blob-deploy'
+//   params: {
+//     dnsZoneName: dnsZoneNameStorage
+//     privateLinkName: storageAccountPrivateLinkName
+//     privateEndpointName:storageAccountPrivateEndpointName
+//     serviceId: storageAccount.id
+//     groupId: 'blob'
+//     snetId: defaultSubnet.id
+//     vnetId: vnet.id 
+//   }
+//   dependsOn: [
+//     vnet
+//     defaultSubnet
+//   ]
+// }
 

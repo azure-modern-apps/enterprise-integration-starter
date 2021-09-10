@@ -4,15 +4,15 @@ param logicAppName string
 param logicAppAspName string
 param logicAppAspSku object
 param vnetName string
-param logicAppSubnetName string
-param networking object
-param dnsZoneNameSites string
-param dnsZoneNameStorage string
-param logicAppPrivateLinkName string
-param logicAppPrivateEndpointName string
-param storageAccountPrivateLinkName string
-param storageAccountPrivateEndpointName string
+param subnets object
+// param dnsZoneNameSites string
+// param dnsZoneNameStorage string
+// param logicAppPrivateLinkName string
+// param logicAppPrivateEndpointName string
+// param storageAccountPrivateLinkName string
+// param storageAccountPrivateEndpointName string
 param applicationGatewayProperties object
+param apimProperties object
 
 module storageAccountModule './storageAccount.bicep' = {
   name: 'rg-deploy-${storageAccountName}'
@@ -39,26 +39,47 @@ module networkingModule './networking.bicep' = {
   name: 'rg-deploy-vnet'
   params: {
     vnetName: vnetName
-    logicAppSubnetName: logicAppSubnetName
-    apimSubnetName: applicationGatewayProperties.apimSnetAddressPrefix
-    applicationGatewaySubnetName: applicationGatewayProperties.applicationGatewaySubnetName
+    logicAppSubnetName: subnets.logicAppSubnetName
+    apimSubnetName: subnets.apimSubnetName
+    applicationGatewaySubnetName: subnets.applicationGatewaySubnetName
     logicAppName: logicAppName
-    vnetAddressPrefix: networking.vnetAddressPrefix
-    defaultSnetAddressPrefix: networking.defaultSnetAddressPrefix
-    logicAppsSnetAddressPrefix: networking.logicAppsSnetAddressPrefix
-    applicationGatewaySnetAddressPrefix: networking.applicationGatewaySnetAddressPrefix
-    dnsZoneNameSites: dnsZoneNameSites
-    dnsZoneNameStorage: dnsZoneNameStorage
-    logicAppPrivateLinkName: logicAppPrivateLinkName
-    logicAppPrivateEndpointName: logicAppPrivateEndpointName
-    storageAccountName: storageAccountName
-    storageAccountPrivateLinkName: storageAccountPrivateLinkName
-    storageAccountPrivateEndpointName: storageAccountPrivateEndpointName
+    vnetAddressPrefix: subnets.vnetAddressPrefix
+    defaultSnetAddressPrefix: subnets.defaultSnetAddressPrefix
+    logicAppsSnetAddressPrefix: subnets.logicAppsSnetAddressPrefix
+    apimSnetAddressPrefix: subnets.apimSnetAddressPrefix
+    applicationGatewaySnetAddressPrefix: subnets.applicationGatewaySnetAddressPrefix
+    // dnsZoneNameSites: dnsZoneNameSites
+    // dnsZoneNameStorage: dnsZoneNameStorage
+    // logicAppPrivateLinkName: logicAppPrivateLinkName
+    // logicAppPrivateEndpointName: logicAppPrivateEndpointName
+    // storageAccountName: storageAccountName
+    // storageAccountPrivateLinkName: storageAccountPrivateLinkName
+    // storageAccountPrivateEndpointName: storageAccountPrivateEndpointName
   }
   dependsOn: [
     logicAppModule
   ]
 }
+
+module apimModule './apim.bicep' = {
+  name: 'rg-deploy-apim'
+  params: {
+    vnetName: vnetName
+    apimName: apimProperties.apimName
+    logicAppName: logicAppName
+    apimSkuName: apimProperties.sku.name
+    apimSkuCapacity: apimProperties.sku.capacity
+    apimSubnetName: subnets.apimSubnetName
+    publisherUserEmail: apimProperties.publisherEmail
+    publisherName: apimProperties.publisherName
+    notificationSenderEmail: apimProperties.notificationSenderEmail
+    apimResourcePrefix: apimProperties.apimResourcePrefix
+  }
+  dependsOn: [
+    networkingModule
+  ]
+}
+
 
 module applicationGatewayModule './applicationGateway.bicep' = {
   name: 'rg-deploy-application-gateway'

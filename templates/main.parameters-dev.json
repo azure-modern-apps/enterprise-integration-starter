@@ -26,40 +26,21 @@
     "vnetName": {
       "value": "vnet-eis-dev-auea"
     },
-    "logicAppSubnetName": {
-      "value": "snet-eis-dev-auea-logic"
-    },
-    "networking": {
+    "subnets": {
       "value": {
           "vnetAddressPrefix": "10.0.0.0/16",
           "defaultSnetAddressPrefix": "10.0.0.0/24",
+          "logicAppSubnetName": "snet-eis-dev-auea-logic",
           "logicAppsSnetAddressPrefix": "10.0.1.0/24",
+          "apimSubnetName": "snet-eis-dev-auea-apim",
           "apimSnetAddressPrefix": "10.0.2.0/24",
+          "applicationGatewaySubnetName": "snet-eis-dev-auea-agw",
           "applicationGatewaySnetAddressPrefix": "10.0.3.0/24"
       }
-    },
-    "dnsZoneNameSites": {
-      "value": "privatelink.azurewebsites.net"
-    },
-    "dnsZoneNameStorage": {
-      "value": "privatelink.blob.core.windows.net"
-    },
-    "logicAppPrivateLinkName": {
-      "value": "pl-eis-dev-auea-logic"
-    },
-    "logicAppPrivateEndpointName": {
-      "value": "pe-eis-dev-auea-logic"
-    },
-    "storageAccountPrivateLinkName": {
-      "value": "pl-eis-dev-auea-storage"
-    },
-    "storageAccountPrivateEndpointName": {
-      "value": "pe-eis-dev-auea-storage"
     },
     "applicationGatewayProperties": {
       "value": {
         "applicationGatewayName": "agw-eis-dev-auea",
-        "applicationGatewaySubnetName": "snet-eis-dev-auea-agw-vnext",
         "tier": "Standard_v2",
         "sku": "Standard",
         "skuSize": "Standard_v2",
@@ -67,6 +48,23 @@
         "subnetName": "snet-eis-dev-auea-agw",
         "publicIpAddressName": "ip-public",
         "allocationMethod": "Static"
+      }
+    },
+    "apimProperties": {
+      "value": {
+        "apimName": "apim-eis-dev-aue",
+        "sku": {
+          "name": "Developer",
+          "capacity": 1
+        },
+        "publisherEmail": "admin@test.com",
+        "publisherName": "Microsoft",
+        "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
+        "capacity": 1,
+        "publicIpAddressName": "ip-public",
+        "allocationMethod": "Static",
+        "apimResourcePrefix": "https://management.azure.com"
+
       }
     }
   }

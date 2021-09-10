@@ -47,7 +47,7 @@ jobs:
       - name: Login via Az module
         uses: azure/login@v1
         with:
-          creds: ${{secrets.AZURE_CREDENTIALS}}
+          creds: ${{secrets.AZURE_CREDENTIALS_DEV}}
           enable-AzPSSession: true
       - uses: actions/download-artifact@master
         with:
@@ -60,8 +60,8 @@ jobs:
         with:
           inlineScript: |
             $profile = Get-AzWebAppPublishingProfile `
-                -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP }} `
-                -Name ${{ secrets.LOGIC_APP_NAME }}
+                -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_DEV }} `
+                -Name ${{ secrets.LOGIC_APP_NAME_DEV }}
             $profile = $profile.Replace("`r", "").Replace("`n", "")
             Write-Output "::set-output name=profile::$profile"
           azPSVersion: latest
@@ -70,6 +70,6 @@ jobs:
         uses: Azure/functions-action@v1.3.1
         id: la
         with:
-          app-name: ${{secrets.AZURE_RESOURCE_GROUP}}
+          app-name: ${{secrets.AZURE_RESOURCE_GROUP_DEV}}
           package: "./output/logicAppWorkflow.zip"
           publish-profile: ${{steps.publishprofile.outputs.profile}}
