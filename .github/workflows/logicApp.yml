@@ -3,6 +3,10 @@
 
 name: Build and Deploy Logic App
 
+env:
+  LA_NAME: 'logic-eis-dev-auea'
+  APIM_NAME: 'apim-eis-dev-aue'
+  WORKFLOW_NAME: 'eisHttpRequest'
 on:
   workflow_dispatch:
   # Trigger the workflow every time the Bicep EIS Deployment workflow ran to completion
@@ -73,3 +77,28 @@ jobs:
           app-name: ${{secrets.AZURE_RESOURCE_GROUP_DEV}}
           package: "./output/logicAppWorkflow.zip"
           publish-profile: ${{steps.publishprofile.outputs.profile}}
+
+  logic_app_apim_integration:
+    name: Logic app APIM Update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.0.72
+          inlineScript: |
+            $azureRestApiBasePath = "https://management.azure.com/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_DEV }}/providers"
+            $worklowCallback = $(az rest --method post --uri "$azureRestApiBasePath/Microsoft.Web/sites/${{ env.LA_NAME }}/hostruntime/runtime/webhooks/workflow/api/management/workflows/${{ env.WORKFLOW_NAME }}/triggers/manual/listCallbackUrl?api-version=2018-11-01")
+            $workflowResponse = $worklowCallback | ConvertFrom-Json
+            $workflowBasePath= $workflowResponse.basePath
+
+            $apimRestApiBasePath = "$azureRestApiBasePath/Microsoft.ApiManagement/service/${{ env.APIM_NAME }}"
+            #update APIM backend runtime url for logic app
+            $backendPath = $workflowBasePath.Substring(0,$workflowBasePath.IndexOf("/manual/"))
+            $backendBody = '{\"properties\":{\"url\":\"' + $backendPath + '\"}}'
+            az rest --method patch --uri "$apimRestApiBasePath/backends/${{ env.LA_NAME }}-backend?api-version=2020-06-01-preview" --body $backendBody
+
+            #Update APIM name value for logic app rewrite url signature
+            $nameValueBody = '{\"properties\":{\"value\":\"' + $workflowResponse.queries.sig + '\"}}'
+            az rest --method patch --uri "$apimRestApiBasePath/namedValues/${{ env.LA_NAME }}-name-value?api-version=2020-06-01-preview --body $nameValueBody
+
