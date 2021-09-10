@@ -78,14 +78,20 @@ jobs:
           package: "./output/logicAppWorkflow.zip"
           publish-profile: ${{steps.publishprofile.outputs.profile}}
 
-  logic_app_apim_integration:
+  logic_app_apim_update:
     name: Logic app APIM Update
     runs-on: ubuntu-latest
+    needs: [logic_app_deploy]
     steps:
-      - name: Azure CLI script
-        uses: azure/CLI@v1
+      - name: Login via Az module
+        uses: azure/login@v1
         with:
-          azcliversion: 2.0.72
+          creds: ${{secrets.AZURE_CREDENTIALS_DEV}}
+          enable-AzPSSession: true
+      - name: Updating APIM properties
+        id: updateapim
+        uses: azure/powershell@v1
+        with:
           inlineScript: |
             $azureRestApiBasePath = "https://management.azure.com/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}/resourceGroups/${{ secrets.AZURE_RESOURCE_GROUP_DEV }}/providers"
             $worklowCallback = $(az rest --method post --uri "$azureRestApiBasePath/Microsoft.Web/sites/${{ env.LA_NAME }}/hostruntime/runtime/webhooks/workflow/api/management/workflows/${{ env.WORKFLOW_NAME }}/triggers/manual/listCallbackUrl?api-version=2018-11-01")
