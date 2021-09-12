@@ -35,8 +35,27 @@
           "apimSubnetName": "snet-eis-dev-auea-apim",
           "apimSnetAddressPrefix": "10.0.2.0/24",
           "applicationGatewaySubnetName": "snet-eis-dev-auea-agw",
-          "applicationGatewaySnetAddressPrefix": "10.0.3.0/24"
+          "applicationGatewaySnetAddressPrefix": "10.0.3.0/24",
+          "bastionSubnetAddressPrefix": "10.0.4.0/24"
       }
+    },
+    "dnsZoneNameSites": {
+      "value": "privatelink.azurewebsites.net"
+    },
+    "dnsZoneNameStorage": {
+      "value": "privatelink.blob.core.windows.net"
+    },
+    "logicAppPrivateLinkName": {
+      "value": "pl-eis-dev-auea-logic"
+    },
+    "logicAppPrivateEndpointName": {
+      "value": "pe-eis-dev-auea-logic"
+    },
+    "storageAccountPrivateLinkName": {
+      "value": "pl-eis-dev-auea-storage"
+    },
+    "storageAccountPrivateEndpointName": {
+      "value": "pe-eis-dev-auea-storage"
     },
     "applicationGatewayProperties": {
       "value": {
@@ -64,7 +83,6 @@
         "publicIpAddressName": "ip-public",
         "allocationMethod": "Static",
         "apimResourcePrefix": "https://management.azure.com"
-
       }
     }
   }

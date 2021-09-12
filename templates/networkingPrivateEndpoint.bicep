@@ -5,6 +5,7 @@ param groupId string
 param serviceId string
 param snetId string
 param vnetId string
+param defaultSubnetName string
 
 var location = resourceGroup().location
 
@@ -48,7 +49,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2020-11-01' = {
 
 resource dnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2020-11-01' = {
   parent: privateEndpoint
-  name: 'default'
+  name: defaultSubnetName
   properties: {
     privateDnsZoneConfigs: [
       {
