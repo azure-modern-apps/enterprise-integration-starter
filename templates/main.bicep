@@ -5,14 +5,19 @@ param logicAppAspName string
 param logicAppAspSku object
 param vnetName string
 param subnets object
-// param dnsZoneNameSites string
-// param dnsZoneNameStorage string
-// param logicAppPrivateLinkName string
-// param logicAppPrivateEndpointName string
-// param storageAccountPrivateLinkName string
-// param storageAccountPrivateEndpointName string
+param dnsZoneNameSites string
+param dnsZoneNameStorage string
+param logicAppPrivateLinkName string
+param logicAppPrivateEndpointName string
+param storageAccountPrivateLinkName string
+param storageAccountPrivateEndpointName string
 param applicationGatewayProperties object
 param apimProperties object
+
+var defaultSubnetName = 'default'
+
+// Bastion must have its own subnet with this name
+var bastionSubnetName = 'AzureBastionSubnet'
 
 module storageAccountModule './storageAccount.bicep' = {
   name: 'rg-deploy-${storageAccountName}'
@@ -42,23 +47,50 @@ module networkingModule './networking.bicep' = {
     logicAppSubnetName: subnets.logicAppSubnetName
     apimSubnetName: subnets.apimSubnetName
     applicationGatewaySubnetName: subnets.applicationGatewaySubnetName
-    logicAppName: logicAppName
     vnetAddressPrefix: subnets.vnetAddressPrefix
     defaultSnetAddressPrefix: subnets.defaultSnetAddressPrefix
     logicAppsSnetAddressPrefix: subnets.logicAppsSnetAddressPrefix
     apimSnetAddressPrefix: subnets.apimSnetAddressPrefix
     applicationGatewaySnetAddressPrefix: subnets.applicationGatewaySnetAddressPrefix
-    // dnsZoneNameSites: dnsZoneNameSites
-    // dnsZoneNameStorage: dnsZoneNameStorage
-    // logicAppPrivateLinkName: logicAppPrivateLinkName
-    // logicAppPrivateEndpointName: logicAppPrivateEndpointName
-    // storageAccountName: storageAccountName
-    // storageAccountPrivateLinkName: storageAccountPrivateLinkName
-    // storageAccountPrivateEndpointName: storageAccountPrivateEndpointName
+    bastionSubnetAddressPrefix: subnets.bastionSubnetAddressPrefix
+    bastionSubnetName: bastionSubnetName
+    defaultSubnetName: defaultSubnetName
+  }
+}
+
+module logicAppVnetIntegration 'logicAppVnetIntegration.bicep' = {
+  name: 'rg-deploy-logicApp-vnetIntegration'
+  params: {
+    vnetName: vnetName
+    logicAppSubnetName: subnets.logicAppSubnetName
+    logicAppName: logicAppName
   }
   dependsOn: [
     logicAppModule
-  ]
+    networkingModule
+  ]  
+}
+
+// Configure Private Endpoints for Logic App and Storage
+
+module privateEndpoints 'privateEndpoints.bicep' = {
+  name: 'rg-deploy-privateEndpoints'
+  params: {
+    vnetName: vnetName
+    dnsZoneNameSites: dnsZoneNameSites
+    dnsZoneNameStorage: dnsZoneNameStorage
+    logicAppPrivateLinkName: logicAppPrivateLinkName
+    logicAppPrivateEndpointName: logicAppPrivateEndpointName
+    storageAccountName: storageAccountName
+    storageAccountPrivateLinkName: storageAccountPrivateLinkName
+    storageAccountPrivateEndpointName: storageAccountPrivateEndpointName
+    logicAppName: logicAppName
+    defaultSubnetName: defaultSubnetName
+  }
+  dependsOn: [
+    logicAppModule
+    networkingModule
+  ]  
 }
 
 module apimModule './apim.bicep' = {

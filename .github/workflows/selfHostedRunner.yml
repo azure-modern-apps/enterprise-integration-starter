@@ -1,0 +1,45 @@
+# This workflow is designed to assist with creating
+# a GitHub self-hosted runner. The intention is that 
+# the runner will be created as a prerequisite, one 
+# time only.
+#
+# The self-hosted runner is a virtual machine where
+# the self-hosted runner application will be installed.
+# The runner is deployed into the same virtual network
+# so that it will have the necessary access to deploy 
+# (or update) the private networking components in this 
+# sample.
+
+on:
+  workflow_dispatch:
+  # For now, assumes this will be manually triggered
+
+name: Create Resources for Self-Hosted Runner
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout code
+      - uses: actions/checkout@main
+        # Log into Azure
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+
+        # Deploy Bicep file
+      - name: deploy
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
+          resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_DEV }}
+          # A different "main" template for just the resources
+          # related to the self-hosted runner.  It intentionally
+          # overlaps with the resources & configuration for 
+          # the primary bicep deployment, as it will create
+          # a single VM in the same network environment.
+          template: ./templates/main-selfHostedRunner.bicep
+          # Share the same parameters file for consistency
+          # with the network naming and address spaces
+          parameters: ./templates/main-selfHostedRunner.parameters-dev.json selfHostedRunnerVmAdminUserName=${{ secrets.RUNNER_VM_ADMIN_USERNAME_DEV }} selfHostedRunnerVmAdminPassword=${{ secrets.RUNNER_VM_ADMIN_PASSWORD_DEV }}
+          failOnStdErr: true

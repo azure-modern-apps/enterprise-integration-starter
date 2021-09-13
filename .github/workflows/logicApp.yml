@@ -26,11 +26,12 @@ on:
 jobs:
   logic_app_build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Package logic app workflow
+        # note that zip should be installed on the agent
         run: (cd logicAppWorkflow; mkdir -p ../output; zip -r ../output/logicAppWorkflow.zip .)
       - name: Upload app zip package
         uses: actions/upload-artifact@v2
@@ -41,7 +42,7 @@ jobs:
 
   logic_app_deploy:
     name: Deploy
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [logic_app_build]
     environment:
       name: Dev
@@ -52,23 +53,27 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{secrets.AZURE_CREDENTIALS_DEV}}
-          enable-AzPSSession: true
+          # enable-AzPSSession: true
       - uses: actions/download-artifact@master
         with:
           name: logicAppWorkflow
           path: ./output/
 
-      - name: Get publish Profile
-        id: publishprofile
-        uses: azure/powershell@v1
-        with:
-          inlineScript: |
-            $profile = Get-AzWebAppPublishingProfile `
-                -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_DEV }} `
-                -Name ${{ secrets.LOGIC_APP_NAME_DEV }}
-            $profile = $profile.Replace("`r", "").Replace("`n", "")
-            Write-Output "::set-output name=profile::$profile"
-          azPSVersion: latest
+      # Replaced with adding the profile as a SECRET - AZURE_LOGICAPP_PUBLISH_PROFILE
+      # Per https://github.com/marketplace/actions/azure-functions-action#using-publish-profile-as-deployment-credential-recommended
+      # This also avoids the need to install powershell on the linux self hosted runner
+      #
+      # - name: Get publish Profile
+      #   id: publishprofile
+      #   uses: azure/powershell@v1
+      #   with:
+      #     inlineScript: |
+      #       $profile = Get-AzWebAppPublishingProfile `
+      #           -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP }} `
+      #           -Name ${{ secrets.LOGIC_APP_NAME }}
+      #       $profile = $profile.Replace("`r", "").Replace("`n", "")
+      #       Write-Output "::set-output name=profile::$profile"
+      #     azPSVersion: latest
 
       - name: Deploy to Azure Logic App
         uses: Azure/functions-action@v1.3.1
