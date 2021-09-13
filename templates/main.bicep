@@ -125,7 +125,7 @@ module applicationGatewayModule './applicationGateway.bicep' = {
     publicIpAddressName: applicationGatewayProperties.publicIpAddressName
     allocationMethod: applicationGatewayProperties.allocationMethod
     vnetName: vnetName
-    logicAppName: logicAppName
+    apimName: apimProperties.apimName
   }
   dependsOn: [
     networkingModule

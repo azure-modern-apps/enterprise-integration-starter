@@ -23,6 +23,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' existing = {
 resource logicApp 'Microsoft.Web/sites@2020-12-01' existing = {
   name: logicAppName
 }
+
 resource apim 'Microsoft.ApiManagement/service@2021-01-01-preview' = {
   name: apimName
   location: resourceGroup().location
@@ -58,6 +59,7 @@ resource logicAppApi 'Microsoft.ApiManagement/service/apis@2021-01-01-preview' =
     serviceUrl: logicAppHostName
     path: 'logicapp'
     protocols: [
+      'http'
       'https'
     ]
     isCurrent: true
