@@ -7,16 +7,16 @@ param publicIpAddressName string
 param sku string
 param allocationMethod string
 param vnetName string
-param logicAppName string
+param apimName string
 
 var frontEndPort80 = 'port_80'
 var publicIpName = 'appGwPublicFrontendIp'
-var backendPoolLogicApp = 'backend-logic-app'
+var backendPoolApim = 'backend-apim'
 var backendHttp = 'http-backend'
-var httpListenerLogicApp = 'listener-backend-logic-app'
-var routingLogicApp = 'routing-backend-logic-app'
-var healthProbeLogicApp = 'health-probe-logicapp'
-var logicAppHostName = '${logicAppName}.azurewebsites.net'
+var httpListenerApim = 'listener-backend-apim'
+var routingApim = 'routing-backend-apim'
+var healthProbeApim = 'health-probe-apim'
+var apimHostName = '${apimName}.azure-api.net'
 
 resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' existing = {
   name: vnetName
@@ -25,6 +25,10 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' existing = {
 resource gatewaySubnet 'Microsoft.Network/virtualNetworks/subnets@2020-06-01' existing = {
   parent: vnet
   name: subnetName
+}
+
+resource apim 'Microsoft.ApiManagement/service@2021-01-01-preview' existing = {
+  name: apimName
 }
 
 resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2020-08-01' = {
@@ -77,11 +81,11 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2019-09-01' =
     ]
     backendAddressPools: [
       {
-        name: backendPoolLogicApp
+        name: backendPoolApim
         properties: {
           backendAddresses: [
             {
-              fqdn: logicAppHostName
+              fqdn: apim.properties.privateIPAddresses[0]
             }
           ]
         }
@@ -95,16 +99,16 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2019-09-01' =
           protocol: 'Http'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 20
-          hostName: logicAppHostName
+          hostName: apimHostName
           probe: {
-            id: resourceId('Microsoft.Network/applicationGateways/probes', applicationGatewayName, healthProbeLogicApp)
+            id: resourceId('Microsoft.Network/applicationGateways/probes', applicationGatewayName, healthProbeApim)
           }
         }
       }
     ]
     httpListeners: [
       {
-        name: httpListenerLogicApp
+        name: httpListenerApim
         properties: {
           frontendIPConfiguration: {
             id: resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', applicationGatewayName, publicIpName)
@@ -119,15 +123,15 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2019-09-01' =
     ]
     requestRoutingRules: [
       {
-        name: routingLogicApp
+        name: routingApim
         properties: {
           ruleType: 'Basic'
           httpListener: {
-            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', applicationGatewayName, httpListenerLogicApp)
+            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', applicationGatewayName, httpListenerApim)
           }
           priority: null
           backendAddressPool: {
-            id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', applicationGatewayName, backendPoolLogicApp)
+            id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', applicationGatewayName, backendPoolApim)
           }
           backendHttpSettings: {
             id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', applicationGatewayName, backendHttp)
@@ -137,15 +141,14 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2019-09-01' =
     ]
     probes: [
       {
-        name: healthProbeLogicApp
+        name: healthProbeApim
         properties: {
           protocol: 'Http'
-          host: logicAppHostName
-          path: '/'
+          path: '/status-0123456789abcdef'
           interval: 30
           timeout: 30
           unhealthyThreshold: 3
-          pickHostNameFromBackendHttpSettings: false
+          pickHostNameFromBackendHttpSettings: true
           minServers: 0
           match: {}
         }

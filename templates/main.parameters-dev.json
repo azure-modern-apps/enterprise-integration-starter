@@ -65,13 +65,13 @@
         "skuSize": "Standard_v2",
         "capacity": 1,
         "subnetName": "snet-eis-dev-auea-agw",
-        "publicIpAddressName": "ip-public",
+        "publicIpAddressName": "pip-eis-dev-auea-agw",
         "allocationMethod": "Static"
       }
     },
     "apimProperties": {
       "value": {
-        "apimName": "apim-eis-dev-aue-1",
+        "apimName": "apim-eis-dev-aue",
         "sku": {
           "name": "Developer",
           "capacity": 1
@@ -80,7 +80,6 @@
         "publisherName": "Microsoft",
         "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
         "capacity": 1,
-        "publicIpAddressName": "ip-public",
         "allocationMethod": "Static",
         "apimResourcePrefix": "https://management.azure.com"
       }
