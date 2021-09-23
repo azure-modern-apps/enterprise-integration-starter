@@ -50,7 +50,7 @@ Choose the Actions tab and select the azure-deploy tab to see the action run.
 Image: GitHub Action Logs
 
 ## 5. Review Azure Resource in your Azure Portal
-- Go to your azure portal and you should be able to see the deployed resource under a resource group names YOUR_APPLICATION_NAME-aue-dev-001.
+- Go to your azure portal and you should be able to see the deployed resource under a resource group names YOUR_APPLICATION_NAME-auea-dev-001.
 - Go to the Azure FrontDoor resource and copy the app URL which should be
 // TODO: check frontdoor URL
 https://YOUR_APPLICATION_NAME.afd.net
