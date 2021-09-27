@@ -12,7 +12,6 @@
 
 on:
   workflow_dispatch:
-  # For now, assumes this will be manually triggered
 
 name: Create Resources for Self-Hosted Runner
 
@@ -20,15 +19,14 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # Checkout code
-      - uses: actions/checkout@main
-        # Log into Azure
-      - uses: azure/login@v1
+      - name: Checkout code
+        uses: actions/checkout@main
+      - name: Log into Azure
+        uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
-        # Deploy Bicep file
-      - name: deploy
+      - name: Deploy Bicep file
         uses: azure/arm-deploy@v1
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
