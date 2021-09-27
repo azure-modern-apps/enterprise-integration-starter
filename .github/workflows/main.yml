@@ -1,24 +1,31 @@
 on:
+  workflow_dispatch:
   push:
+    # Trigger only when any file change is detected within the path attribute.
     branches: [main]
+    paths:
+      - "templates/**"
+      - ".github/workflows/main.yml"
+
 name: Bicep EIS Deployment
+
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       # Checkout code
       - uses: actions/checkout@main
         # Log into Azure
       - uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
         # Deploy Bicep file
       - name: deploy
         uses: azure/arm-deploy@v1
         with:
-          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
+          resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_DEV }}
           template: ./templates/main.bicep
           parameters: ./templates/main.parameters-dev.json
           failOnStdErr: true

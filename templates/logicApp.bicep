@@ -68,5 +68,7 @@ resource lgapp_appSettings 'Microsoft.Web/sites/config@2018-11-01' = {
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionString
     WEBSITE_CONTENTSHARE: '${logicAppName}fileshare'
     WEBSITE_NODE_DEFAULT_VERSION: '~12'
+    WEBSITE_DNS_SERVER: '168.63.129.16'
+    WEBSITE_VNET_ROUTE_ALL: '1'
   }
 }
