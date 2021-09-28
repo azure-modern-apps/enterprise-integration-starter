@@ -5,7 +5,7 @@ name: Build and Deploy Logic App
 
 env:
   LA_NAME: 'logic-eis-dev-auea'
-  APIM_NAME: 'apim-eis-dev-aue'
+  APIM_NAME: 'apim-eis-dev-auea'
   WORKFLOW_NAME: 'eisHttpRequest'
 on:
   workflow_dispatch:
@@ -65,8 +65,8 @@ jobs:
         with:
           inlineScript: |
             $profile = Get-AzWebAppPublishingProfile `
-                -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP }} `
-                -Name ${{ secrets.LOGIC_APP_NAME }}
+                -ResourceGroupName ${{ secrets.AZURE_RESOURCE_GROUP_DEV }} `
+                -Name ${{ secrets.LOGIC_APP_NAME_DEV }}
             $profile = $profile.Replace("`r", "").Replace("`n", "")
             Write-Output "::set-output name=profile::$profile"
           azPSVersion: latest
