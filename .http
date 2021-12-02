@@ -1,0 +1,8 @@
+## To excute this in vscode you will need to have this exension installed https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
+POST http://{IP}/logicapp/manual/invoke HTTP/1.1
+Content-Type: application/json
+Ocp-Apim-Subscription-Key: {APIM_SUBSCRTIPTION_KEY}
+Ocp-Apim-Trace: true
+
+{}

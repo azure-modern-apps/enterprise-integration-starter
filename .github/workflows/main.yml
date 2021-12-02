@@ -1,7 +1,6 @@
 on:
   workflow_dispatch:
   push:
-    # Trigger only when any file change is detected within the path attribute.
     branches: [main]
     paths:
       - "templates/**"
@@ -13,15 +12,15 @@ jobs:
   build-and-deploy:
     runs-on: self-hosted
     steps:
-      # Checkout code
-      - uses: actions/checkout@main
-        # Log into Azure
-      - uses: azure/login@v1
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - name: Log into Azure
+        uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
-        # Deploy Bicep file
-      - name: deploy
+      - name: Deploy Bicep file
         uses: azure/arm-deploy@v1
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
