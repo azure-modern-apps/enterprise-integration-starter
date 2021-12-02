@@ -19,7 +19,7 @@ Figure: The repository's fork button
 
 ## 2 - Create the resource group for your dev/test environment
 
-To practice least privilige we only allow our deployment action to access a specific resource group. In the next step you will create a service principle that can access this resource group.
+To practice least privilige we only allow our deployment action to access a specific resource group. In the next step you will create a service principal that can access this resource group.
 
 If you do not have the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/) installed you can use the Azure portal to access the az cli.
 
@@ -113,7 +113,7 @@ env:
 */ 
 ```
 
-- ```templates/main.parameters-dev.json``` main.bicap JSON file variables
+- ```templates/main.parameters-dev.json``` main.bicep JSON file variables
 
 ```JSON
 {
@@ -143,7 +143,7 @@ For example from ```eisHttpRequest``` to ```{ZOUR_PROJECT_ALIAS}HttpRequest```
 ```
 git add .
 
-git commit -m "Update vaibles"
+git commit -m "Update variables"
 
 git push
 ```
